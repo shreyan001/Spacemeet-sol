@@ -12,8 +12,7 @@ const CreateMeet = ({address, onClose, meetMod}) => {
   const [loading, setLoading] = useState(false);
   const [logoCid, setLogoCid] = useState(null);
   const [uploadError, setUploadError] = useState(null);
-  const [meetType, setMeetType] = useState('');
-  const [nftTicketing, setNftTicketing] = useState('');
+
 
   const handleLogoUpload = async (event) => {
     setLoading(true);
@@ -52,11 +51,11 @@ const CreateMeet = ({address, onClose, meetMod}) => {
       
     };
 
-    try {console.log(`http://${API}/api/${meetType}s/`);
-      await axios.post(`http://${API}/api/${meetType}s/`, data).then(response => {
-        const id = `${meetType}Id`
+    try {console.log(`http://${API}/api/calls/`);
+      await axios.post(`http://${API}/api/calls/`, data).then(response => {
+        const id = `callId`
         console.log(id);
-        router.push(`/config/${meetType}/${response.data[id]}`)
+        router.push(`/config/${response.data[id]}`)
       });
     } catch (error) {
       console.log(error);
@@ -113,75 +112,9 @@ const CreateMeet = ({address, onClose, meetMod}) => {
             {uploadError && <p className="text-red-500 text-sm mt-2">{uploadError}</p>}
           </div>
          
-          
-          <div className="mb-4">
-        <label className="block text-white font-bold mb-2" htmlFor="meetType">
-          Create:
-        </label>
-        <div className="flex flex-row space-x-4">
-          <div className="flex items-center">
-            <input
-              type="radio"
-              id="meetTypeConference"
-              name="meetType"
-              value="meet"
-              className="mr-2"
-              checked={ meetType === "meet"}
-              onChange={(event) => setMeetType(event.target.value)}
-            />
-            <label htmlFor="meetTypeConference" className="text-white">
-              Conference
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="radio"
-              id="meetTypeCommunityCall"
-              name="meetType"
-              value="call"
-              className="mr-2"
-              checked={meetType === "call"}
-              onChange={(event) => setMeetType(event.target.value)}
-            />
-            <label htmlFor="meetTypeCommunityCall" className="text-white">
-              Community Call
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="radio"
-              id="meetTypeDAOBackyard"
-              name="meetType"
-              value="floor"
-              className="mr-2"
-              checked={meetType === "floor"}
-              onChange={(event) => setMeetType(event.target.value)}
-            />
-            <label htmlFor="meetTypeDAOBackyard" className="text-white">
-              DAO Backyard
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="nftTicketing"
-            checked={nftTicketing}
-            onChange={(event) => setNftTicketing(event.target.checked)}
-            className="mr-2"
-          />
-          <label htmlFor="nftTicketing" className="text-white">
-            Owner needs NFT Ticketing
-          </label>
-        </div>
-      </div>
-
       <button
         type="submit"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-auto h-12 text-base focus:outline-none focus:shadow-outline"
+        className="button1"
       >
         Create Meet
       </button>

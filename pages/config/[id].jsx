@@ -1,19 +1,24 @@
 import { useRouter } from "next/router";
-import { useAccount } from 'wagmi';
-import { Connect } from "../../../components/Connect";
+import Profile from "../../components/Profile";
 import { useState } from "react";
 import { useLivepeerProvider } from "@livepeer/react";
 import { useCreateStream, createStream } from '@livepeer/react';
 import axios from "axios";
 import { ToastContainer, toast, Slide } from 'react-toastify';
-import '@notifi-network/notifi-react-card/dist/index.css';
+import ShareModal from 'lit-share-modal';
 
 
 
 
-const steps = ['Step 1', 'Step 2', 'Step 3'];
+const steps = ['Step 1', 'Step 2'];
 export default function ProductPage() {
     const API = process.env.NEXT_PUBLIC_API_URI; 
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const onUnifiedAccessControlConditionsSelected = (shareModalOutput) => {
+    console.log(shareModalOutput)
+  }
+
       
 const putStream = async ()=>{
     
@@ -51,6 +56,7 @@ const {
   };
 
   const handleMeetButtonClick = () => {
+   createStream?.()
     setKey(stream?.streamKey);
     setId(stream?.playbackId);
   };
@@ -64,11 +70,12 @@ const {
   };
 
   const handleInputButtonClick = () => {
-    // handle input button click
+    router.push(`/call/${id}`)
   };
 
 
   return (
+  <>
     <div className="flex items-center justify-center h-screen flex-row w-full">
     <ToastContainer
 transition={Slide}
@@ -111,7 +118,7 @@ theme="dark"
         <input className="appearance-none bg-inherit border border-gray-600 rounded-md py-2 px-4 block w-full leading-tight focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent"
          onChange={ (e) => setStreamName(e.target.value)}/>
         <button className="button1"
-        onClick={()=> {createStream?.(),handleMeetButtonClick()}}>Create Stream</button>
+        onClick={()=> {handleMeetButtonClick()}}>Create Stream</button>
         {stream && <div className="renderKey">
             <p> <strong>stream Key:</strong>&nbsp; {Key}</p>
             <p> <strong>stream Name:</strong>&nbsp; {stream.name}</p>
@@ -124,19 +131,27 @@ theme="dark"
 <div className="flex-1">
 <div className="bg-[#2A2A2A] p-4 rounded-md">
 <div className="mb-4">
-<label
-             className="block font-medium text-sm mb-2"
-             htmlFor="input1"
-           >
-Input 1
-</label>
-<input
-             className="appearance-none bg-inherit border border-gray-600 rounded-md py-2 px-4 block w-full leading-tight focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent"
-             id="input1"
-             type="text"
-             value={input1}
-             onChange={handleInput1Change}
-           />
+<h1 className="font-semibold my-2">Config Access Control</h1>
+<button className="button1" onClick={() => setShowShareModal(true)}>
+        Show Share Modal
+      </button>
+    
+      {showShareModal && (
+        <div className={'lit-share-modal'}>
+          <ShareModal darkTheme={'true'}
+            onClose={() => {
+              setShowShareModal(false);
+            }}
+            onUnifiedAccessControlConditionsSelected={onUnifiedAccessControlConditionsSelected}
+          />
+        </div>
+      )}
+</div>
+
+</div>
+</div>
+
+
 </div>
 <div className="text-right">
 <button
@@ -147,36 +162,7 @@ Next
 </button>
 </div>
 </div>
+
 </div>
-<div className="flex-1">
-<div className="bg-[#2A2A2A] p-4 rounded-md">
-<div className="mb-4">
-<label
-             className="block font-medium text-sm mb-2"
-             htmlFor="input2"
-           >
-Input 2
-</label>
-<input
-             className="appearance-none bg-inherit border border-gray-600 rounded-md py-2 px-4 block w-full leading-tight focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent"
-             id="input2"
-             type="text"
-             value={input2}
-             onChange={handleInput2Change}
-           />
-</div>
-<div className="text-right">
-<button
-             className=" button1"
-             onClick={handleInputButtonClick}
-           >
-Done
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-  );
+ </> );
 }

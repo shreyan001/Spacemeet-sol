@@ -40,14 +40,14 @@ export default function Register({code,address,objectName,isMOpen,onMClose,id}) 
 
   return(<div className="  overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none m-auto w-1/3 h-1/2 gap-3
    bg-black1 rounded-xl flex flex-col items-center justify-center">
-   <div className=" mx-auto  w-5/6 h-fit text-right"><span onClick={onMClose} className="text-lg font-extrabold cursor-pointer">x</span></div> 
-   <img src={img_url} alt="robo" className="h-1/3 w-1/4 hexagon" />
+   <div className=" mx-auto w-5/6 h-fit text-right"><span onClick={onMClose} className="text-lg font-extrabold cursor-pointer">x</span></div> 
+   <img src={img_url} alt="robo" className="h-1/3 w-1/4 rounded-full" />
 
    <h1 className="text-xs font-semibold">address:&nbsp;{address}</h1>
    
    <input onChange={ev => setUsername(ev.target.value)} placeholder="Enter Your Name" type="text" className="w-1/2 h-8 text-xs font-semibold bg-black4 rounded-md"></input>
 
-   <div className="w-1/3 text-right"><button className="button1" onClick={()=>{register(img_url,username,address,id)}}>Submit</button></div>
+   <div className="w-1/2 text-right"><button className="button1" onClick={()=>{register(img_url,username,address,id)}}>Submit</button></div>
  </div>)
 
 };

@@ -5,12 +5,11 @@ import { Player } from "@livepeer/react";
 import axios from 'axios';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import { useRouter } from "next/router";
-import { useAccount } from 'wagmi';
+import { useWallet } from "@solana/wallet-adapter-react";
 import Image from "next/image";
-import { Connect } from "../../components/Connect";
 import ToggleButtons from "../../components/Dock";
 import { huddleIframeApp } from "@huddle01/huddle01-iframe";
-import Chat from "../../components/chat/Chat";
+import Profile from "../../components/Profile";
 
 
 
@@ -18,7 +17,8 @@ import Chat from "../../components/chat/Chat";
 
 
  export default function Calls() {
-  const {isConnected,address } = useAccount();
+
+  const {publicKey} = useWallet();
   const router = useRouter();
   const [isOwner,setIsOwner] = useState(false);
   const [isOpen,setOpen] = useState(false);
@@ -28,8 +28,8 @@ import Chat from "../../components/chat/Chat";
  const [ObjId, setObjId]= useState(null);
  const [logo, setLogo]= useState([]);
  const [tTables, setT]= useState([]);  
- const [addr, setAddr]  = useState([]);  
- const useraddress = address;
+ const useraddress = publicKey?.toBase58()
+ console.log(useraddress)
 
    const API = process.env.NEXT_PUBLIC_API_URI;
 
@@ -129,7 +129,6 @@ import Chat from "../../components/chat/Chat";
       const { id } = router.query;
       if (id) {
         const { data: callData } = await axios.post(`http://${API}/api/calls/get`, { callId: id });
-        setAddr(callData.userDoc.Owner);
         if(callData.userDoc.Owner === useraddress){setIsOwner(true)}
         setName(callData.userDoc.callName);
         setObjId(callData.userDoc._id);
@@ -175,17 +174,14 @@ theme="dark"
     height: "97%",
     noBorder: true,
   }} useraddress="useraddress" isOpen={isOpen} name={callName} onClose={(name)=>{handleDelete(name)}}key={1}/>
-    <div className="stream">
-    <div className="btn1 overflow-hidden"><img className="pb-3" src={logo} width={500} height={500} alt="V"/></div>
-    <div className="miniNav"> <h1 className="font-semibold text-xl mx-3">{name}
+    <div className="stream mx-auto"><div className="w-11/12  flex flex-row justify-start gap-5 items-center">
+    <div className="btn1 overflow-hidden"><img className="" src={logo} width={100} height={100} alt="V"/></div>
+    <div className="miniNav shadowCall"> <h1 className="font-semibold text-xl mx-3">{name}
          </h1> 
-    </div>
-   <Image src='/wew.svg' height={40} width={40}/>
-   <div className="unit"><div className=" bg-black rounded-lg ml-1 p-1"><Image src='/1212.svg' height={20} width={20}/>
-   </div><div className="flex justify-center items-center"><Connect/></div></div>
-    <button className="button3 bg-red-600">Leave Meet</button>
+    </div></div><div className="w-1/4 flex flex-row justify-end gap-5 items-center">
+   <Profile/></div>
+    
   </div>
-   {console.log(useraddress,"addr")}
   <div className="sec2">
  <div className="w-full flex flex-row h-10 justify-start items-center">
    <h1 className="text-xl font-semibold ml-1 mb-3">Main Event</h1></div>
@@ -197,7 +193,6 @@ theme="dark"
       objectFit="cover"
       priority
     /></div> 
-{isVisible2 && <Chat addr={addr} logo={logo}/>}
   </div></div>
   {isVisible && <div  ref={targetDivRef}
         className="shadowCall2 w-10/12 mx-auto rounded bg-black2 flex min-h-60 flex-col justify-center items-center gap-y-5 my-10 py-5">

@@ -7,34 +7,45 @@ import {createReactClient,studioProvider,LivepeerConfig} from '@livepeer/react';
 import { useState,useEffect } from "react";
 import "../styles/Cards.css"
 import "../styles/Screen.css"
-import '@rainbow-me/rainbowkit/styles.css';
-import { RainbowKitProvider,  darkTheme , getDefaultWallets} from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, useAccount, WagmiConfig } from 'wagmi';
-import { bscTestnet } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
-import { XmtpContextProvider } from "../context/XmtpContext";
-import { Buffer } from "buffer";
+import React, { useMemo } from "react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
+import {
+  GlowWalletAdapter,
+  PhantomWalletAdapter,
+ SolflareWalletAdapter, TorusWalletAdapter
+} from "@solana/wallet-adapter-wallets";
+import { clusterApiUrl } from "@solana/web3.js";
+import "@solana/wallet-adapter-react-ui/styles.css";
+import '@dialectlabs/react-ui/index.css';
 
-const { chains, provider } = configureChains(
-  [bscTestnet],
-  [
-    jsonRpcProvider({
-      rpc: chain => ({
-        http: process.env.NEXT_PUBLIC_RPC_QUICKNODE,
-      }),
-    }), publicProvider()
-  ]
-);
-const { connectors } = getDefaultWallets({
-  appName: 'My RainbowKit App',
-  chains
-});
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider
-})
+import { 
+  DialectUiManagementProvider, 
+  DialectThemeProvider, 
+  DialectNoBlockchainSdk 
+} from '@dialectlabs/react-ui';
+import { FC } from 'react';
+
+const SdkProvider = (props) => {
+  // Starting with a default fallback to no-chain sdk
+  return <DialectNoBlockchainSdk>{props.children}</DialectNoBlockchainSdk>;
+}
+
+// Dialect needs the connected wallet information from your wallet adapter, 
+// wrapping in a separate component for composition
+const DialectProviders= ({ children }) => {
+  return (
+    <SdkProvider>
+      <DialectThemeProvider>
+        <DialectUiManagementProvider>
+          {children}
+        </DialectUiManagementProvider>
+      </DialectThemeProvider>
+    </SdkProvider>
+  );
+}
+
 
 
 
@@ -42,6 +53,22 @@ function MyApp({ Component, pageProps }) {
   
 
   const [showPopup,setShowPopup] = useState(false);
+
+
+    // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
+    const network = WalletAdapterNetwork.Devnet;
+
+    // You can provide a custom RPC endpoint here
+    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+    const wallets = useMemo(
+      () => [
+        new PhantomWalletAdapter(),
+        new GlowWalletAdapter(),
+    new SolflareWalletAdapter(), new TorusWalletAdapter()
+      ],
+      [network]
+    );
 
   
 const client = createReactClient ({
@@ -66,20 +93,15 @@ const client = createReactClient ({
       <main className="container">
       <MobileWarning showPopup={showPopup} closePopup={()=>{setShowPopup(false)}}/>
       <LivepeerConfig client={client}>
-      <WagmiConfig client={wagmiClient}><XmtpContextProvider> 
-<RainbowKitProvider chains={chains}  coolMode    theme={darkTheme({
-        accentColor: 'linear-gradient(91.44deg, #D800A8 17.68%, #FF007A 88.87%)',
-        accentColorForeground: 'white',
-        borderRadius: 'medium',
-        fontStack: 'system',
-      })}
-> 
+      <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+        <DialectProviders>
   <Component {...pageProps} />
-
-</RainbowKitProvider>
-</XmtpContextProvider></WagmiConfig>
-            
-        
+  </DialectProviders>
+  </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
         </LivepeerConfig>
       </main>
 
