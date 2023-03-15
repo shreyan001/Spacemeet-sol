@@ -51,8 +51,8 @@ const CreateMeet = ({address, onClose, meetMod}) => {
       
     };
 
-    try {console.log(`http://${API}/api/calls/`);
-      await axios.post(`http://${API}/api/calls/`, data).then(response => {
+    try {console.log(`https://${API}/api/calls/`);
+      await axios.post(`https://${API}/api/calls/`, data).then(response => {
         const id = `callId`
         console.log(id);
         router.push(`/config/${response.data[id]}`)

@@ -12,7 +12,7 @@ function ModalForm({ isOpen, onClose,ObjId }) {
 const roomAdd = async (name,topic, host)=>{
     
     const toastId  = toast.loading("Loading...");
-      const response = await axios.post(`http://${API}/api/channels/`, {name:name,_id:ObjId,topic:topic,host:host});
+      const response = await axios.post(`https://${API}/api/channels/`, {name:name,_id:ObjId,topic:topic,host:host});
     if (response.status === 200) {
       toast.update(toastId, { render: "Created New Room", type: "success", isLoading: false, autoClose: 5000})
      

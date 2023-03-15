@@ -59,7 +59,7 @@ import Profile from "../../components/Profile";
    const handleDelete = async(name1) => {
     try {
       const response = await axios.delete(
-        `http://${API}/api/tables/${name1}/`,
+        `https://${API}/api/tables/${name1}/`,
         { data: { addr: useraddress, _id: ObjId } }
       );
   
@@ -87,10 +87,10 @@ import Profile from "../../components/Profile";
     
     const toastId  = toast.loading("Loading...");
     if (tTables !== []){name = `table${tTables + 1}`};
-      const response = await axios.post(`http://${API}/api/tables/add`, {name,_id:ObjId});
+      const response = await axios.post(`https://${API}/api/tables/add`, {name,_id:ObjId});
     if (response.status === 200) {
       toast.update(toastId, { render: "Created New Table", type: "success", isLoading: false, autoClose: 5000})
-      const { data: userData } = await axios.get(`http://${API}/api/tables/?_id=${ObjId}`);
+      const { data: userData } = await axios.get(`https://${API}/api/tables/?_id=${ObjId}`);
       setIsData(userData.userDoc);
      ;
     } else {
@@ -106,7 +106,7 @@ import Profile from "../../components/Profile";
    
     const toastId  = toast.loading("Loading...");
     const addr = useraddress;
-      const response = await axios.put(`http://${API}/api/tables/${name}`, {addr,_id:ObjId});
+      const response = await axios.put(`https://${API}/api/tables/${name}`, {addr,_id:ObjId});
     if (response.status === 200) {
       runcall(name);
       toast.update(toastId, { render: "Joined", type: "success", isLoading: false, autoClose: 5000})
@@ -128,14 +128,14 @@ import Profile from "../../components/Profile";
     try {
       const { id } = router.query;
       if (id) {
-        const { data: callData } = await axios.post(`http://${API}/api/calls/get`, { callId: id });
+        const { data: callData } = await axios.post(`https://${API}/api/calls/get`, { callId: id });
         if(callData.userDoc.Owner === useraddress){setIsOwner(true)}
         setName(callData.userDoc.callName);
         setObjId(callData.userDoc._id);
         setLogo(callData.userDoc.callLogo);
       }
       if (ObjId !== null) {
-        const { data: userData } = await axios.get(`http://${API}/api/tables/?_id=${ObjId}`);
+        const { data: userData } = await axios.get(`https://${API}/api/tables/?_id=${ObjId}`);
         setIsData(userData.userDoc);
          setT(isdata?.length);
       }

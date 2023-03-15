@@ -23,7 +23,7 @@ export default function ProductPage() {
 const putStream = async ()=>{
     
     const toastId  = toast.loading("Loading...");
-      const response = await axios.put(`http://${API}/api/meets/`, {id:id,streamKey:Key,streamId:Id});
+      const response = await axios.put(`https://${API}/api/meets/`, {id:id,streamKey:Key,streamId:Id});
     if (response.status === 200) {
       toast.update(toastId, { render: "Created New Room", type: "success", isLoading: false, autoClose: 5000})
      

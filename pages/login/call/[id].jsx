@@ -19,7 +19,7 @@ useEffect(() => {
     try {
       const { id } = router.query;
       if (id) {
-        const { data: callData } = await axios.post(`http://${API}/api/calls/get`, { callId: id });
+        const { data: callData } = await axios.post(`https://${API}/api/calls/get`, { callId: id });
         // if(callData.userDoc.Owner === useraddress){setIsOwner(true)}
         setName(callData.userDoc.callName);
         setObjId(callData.userDoc._id);
